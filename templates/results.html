@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Results</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>Your Attendance</h1>
+
+        <p>
+            Here's your semester attendance overview.
+        </p>
+
+    </div>
+
+
+    <div class="summary">
+
+        <div class="summary-card">
+
+            <span>Overall Attendance</span>
+
+            <strong>
+                {{ "%.2f"|format(overall_attendance) }}%
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span>Remaining Classes</span>
+
+            <strong>
+                {{ total_remaining|round|int }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-card highlight">
+
+            <span>Safe Classes to Skip</span>
+
+            <strong>
+                {{ total_safe_skips }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Subject Breakdown</h2>
+
+
+        {% for subject in subjects %}
+
+        <div class="result-subject">
+
+            <div class="subject-heading">
+
+                <div>
+
+                    <h3>
+                        {{ subject.name }}
+                    </h3>
+
+                    <p>
+                        {{ subject.classes_per_week|round|int }}
+                        classes / week
+                    </p>
+
+                </div>
+
+
+                <strong>
+                    {{ "%.2f"|format(subject.attendance) }}%
+                </strong>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width: {{ subject.attendance }}%;">
+                </div>
+
+            </div>
+
+
+            <div class="result-info">
+
+                {% if subject.attendance >= threshold %}
+
+                    <span class="safe">
+                        SAFE
+                    </span>
+
+                    <span>
+                        Can skip:
+                        <strong>
+                            {{ subject.safe_skips }}
+                        </strong>
+                        classes
+                    </span>
+
+                {% else %}
+
+                    <span class="danger">
+                        BELOW THRESHOLD
+                    </span>
+
+                    <span>
+                        Required:
+                        {{ threshold }}%
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <a href="/" class="back-btn">
+        ← Calculate Again
+    </a>
+
+</div>
+
+</body>
+
+</html>
